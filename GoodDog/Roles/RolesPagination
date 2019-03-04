@@ -1,0 +1,87 @@
+import React, { Component } from "react";
+import Pagination from "react-js-pagination";
+import RolesCard from "./RolesCard";
+import { Table, Modal } from "reactstrap";
+import Roles from "./Roles";
+
+export default class RolesPagination extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  displayRolesCard = user => {
+    return <RolesCard key={user.id} user={user} modalRequest={this.toggle} />;
+  };
+
+  toggle = resp => {
+    this.setState(
+      {
+        userId: resp
+      },
+      this.props.modalRequester()
+    );
+  };
+
+  paginate() {
+    return (
+      <div className="container-fluid pt-3">
+        <Pagination
+          itemClass="page-item"
+          linkClass="page-link"
+          hideDisabled
+          activePage={this.props.pages.activePage + 1}
+          itemsCountPerPage={this.props.pages.pageSize}
+          totalItemsCount={this.props.pages.totalCount}
+          pageRangeDisplayed={5}
+          onChange={this.props.pageChange}
+        />
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div className="container-fluid-pt-3">
+        <div className="card card-default">
+          <div className="card-body">
+            <div className="table-responsive">
+              <Table className="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Email Address</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Username</th>
+                    <th>User Id</th>
+                    <th>Admin</th>
+                    <th>User</th>
+                    <th>Unauth</th>
+                    <th>Premium</th>
+                  </tr>
+                </thead>
+                <tbody>{this.props.users.map(this.displayRolesCard)}</tbody>
+              </Table>
+            </div>
+            <Modal
+              className="Modal"
+              toggle={this.toggle}
+              isOpen={this.props.modal}
+              container={this.true}
+            >
+              <Roles userId={this.state.userId} />
+            </Modal>
+          </div>
+          <div className="row">
+            <div className="col-sm-12 col-md-5">
+              Total Entries: {this.props.pages.totalCount}
+            </div>
+            <div className="col-sm-12 col-md-7 d-flex justify-content-end">
+              {this.paginate()}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
