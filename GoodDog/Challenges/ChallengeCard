@@ -1,0 +1,159 @@
+import React from "react";
+
+export default class ChallengeCard extends React.Component {
+  handleClick = () => {
+    this.props.modalRequester(this.props.challenge);
+  };
+
+  handleChallengeAccept = () => {
+    this.props.challengeAccept(this.props.challenge);
+  };
+
+  handleRepeat = () => {
+    if (this.props.challenge.canRepeat) {
+      return <div className="badge badge-primary">Can Repeat</div>;
+    } else {
+      return <div className="badge badge-danger">Can't Repeat</div>;
+    }
+  };
+
+  buttonRoleCheck = () => {
+    if (this.props.currentUser.roles.includes("Admin")) {
+      return (
+        <button
+          className="btn btn-secondary btn-sm"
+          onClick={e => this.handleClick(e)}
+        >
+          Update Challenge{" "}
+        </button>
+      );
+    } else {
+      return (
+        <button
+          className="btn btn-secondary btn-sm"
+          onClick={e => this.handleChallengeAccept(e)}
+        >
+          Accept Challenge{" "}
+        </button>
+      );
+    }
+  };
+
+  render() {
+    return (
+      <div className="col-xl-4 col-lg-6 " key={this.props.challenge.id}>
+        <div className="card b">
+          <div className="card-header">
+            <div className="float-right">{this.handleRepeat()}</div>
+            <h4 className="m-0">{this.props.challenge.name}</h4>
+            <small className="text-muted">
+              {this.props.challenge.description}
+            </small>
+          </div>
+          <div className="card-body">
+            <div className="d-flex align-items-center">
+              <div
+                className="w-100"
+                data-toggle="tooltip"
+                data-title="Health"
+                data-original-title=""
+                title=""
+              >
+                <div className="progress progress-xs m-0">
+                  <div className="progress-bar bg-warning" />
+                </div>
+              </div>
+              <div className="wd-xxs text-right">
+                {/* <div className="text-bold text-muted">22%</div> */}
+              </div>
+            </div>
+          </div>
+          <table className="table">
+            <tbody>
+              <tr>
+                <td>
+                  <strong>Start date</strong>
+                </td>
+                <td>{this.props.challenge.dateStart.slice(0, 10)}</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>End date</strong>
+                </td>
+                <td>{this.props.challenge.dateEnd.slice(0, 10)}</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Users</strong>
+                </td>
+                <td>
+                  <a className="inline" href="#">
+                    <img
+                      className="rounded-circle thumb24"
+                      src="/img/user/02.jpg"
+                      alt="project member"
+                    />
+                  </a>
+                  <a className="inline" href="#">
+                    <img
+                      className="rounded-circle thumb24"
+                      src="/img/user/04.jpg"
+                      alt="project member"
+                    />
+                  </a>
+                  <a className="inline" href="#">
+                    <img
+                      className="rounded-circle thumb24"
+                      src="/img/user/05.jpg"
+                      alt="project member"
+                    />
+                  </a>
+                  <a className="inline" href="#">
+                    <img
+                      className="rounded-circle thumb24"
+                      src="/img/user/06.jpg"
+                      alt="project member"
+                    />
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong> Leader</strong>
+                </td>
+                <td>
+                  {/* <td>{challenge.userId}</td> */}
+                  <a
+                    href=""
+                    data-toggle="tooltip"
+                    data-title="Team leader"
+                    data-original-title=""
+                    title=""
+                  >
+                    <img
+                      className="rounded-circle thumb24"
+                      src="/img/user/03.jpg"
+                      alt="project member"
+                    />
+                  </a>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <strong>Points</strong>
+                </td>
+                <td>{this.props.challenge.points}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div />
+
+          <div className="card-footer text-center">
+            {this.buttonRoleCheck()}
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
