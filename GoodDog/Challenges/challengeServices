@@ -1,0 +1,133 @@
+import axios from "axios";
+import * as global from "./serviceHelpers";
+let rootPath = global.API_HOST_PREFIX + "/api/challenges/";
+
+let create = payload => {
+  const config = {
+    method: "POST",
+    url: rootPath,
+    data: payload,
+    withCredentials: true,
+    crossdomain: true,
+    headers: { "Content-Type": "application/json" }
+  };
+
+  return axios(config)
+    .then(global.onGlobalSuccess)
+    .catch(global.onGlobalError);
+};
+
+let acceptChallenge = payload => {
+  const config = {
+    method: "Post",
+    url: rootPath + "users",
+    data: payload,
+    headers: { "Content-type": "application/json" }
+  };
+  return axios(config)
+    .then(global.onGlobalSuccess)
+    .catch(global.onGlobalError);
+};
+
+let getByPage = data => {
+  const config = {
+    method: "get",
+    url: rootPath + data.pageIndex + "/" + data.pageSize,
+    withCredentials: true,
+    crossdomain: true,
+    headers: { "Content-type": "application/json" }
+  };
+  return axios(config)
+    .then(global.onGlobalSuccess)
+    .catch(global.onGlobalError);
+};
+
+let get = id => {
+  const config = {
+    method: "Get",
+    url: rootPath + id,
+    withCredentials: true,
+    crossdomain: true,
+    headers: { "Content-type": "application/json" }
+  };
+  return axios(config)
+    .then(global.onGlobalSuccess)
+    .catch(global.onGlobalError);
+};
+let getByName = name => {
+  const config = {
+    method: "Get",
+    url: rootPath + "?name=" + name,
+    withCredentials: true,
+    crossdomain: true,
+    headers: { "Content-type": "application/json" }
+  };
+  return axios(config)
+    .then(global.onGlobalSuccess)
+    .catch(global.onGlobalError);
+};
+
+let update = (id, payload) => {
+  const config = {
+    method: "Put",
+    url: rootPath + id,
+    data: payload,
+    withCredentials: true,
+    crossdomain: true,
+    headers: { "Content-type": "application/json" }
+  };
+  return axios(config)
+    .then(global.onGlobalSuccess)
+    .catch(global.onGlobalError);
+};
+
+let remove = id => {
+  const config = {
+    method: "Delete",
+    url: rootPath + id,
+
+    withCredentials: true,
+    crossdomain: true,
+    headers: { "Content-type": "application/json" }
+  };
+  return axios(config)
+    .then(global.onGlobalSuccess)
+    .catch(global.onGlobalError);
+};
+
+const getAll = () => {
+  const config = {
+    method: "GET",
+    url: global.API_HOST_PREFIX + "/api/challenges",
+    withCredentials: true,
+    crossdomain: true,
+    headers: { "Content-Type": "/application/json" }
+  };
+
+  return axios(config)
+    .then(global.onGlobalSuccess)
+    .catch(global.onGlobalError);
+};
+
+let listByRewardId = (id, pageIndex, pageSize) => {
+  const config = {
+    url: rootPath + "rewards/" + id + "/" + pageIndex + "/" + pageSize,
+    method: "GET",
+    headers: { "Content-Type": "application/json" }
+  };
+  return axios(config)
+    .then(global.onGlobalSuccess)
+    .catch(global.onGlobalError);
+};
+
+export {
+  create,
+  getByPage,
+  get,
+  getByName,
+  update,
+  getAll,
+  remove,
+  listByRewardId,
+  acceptChallenge
+};
