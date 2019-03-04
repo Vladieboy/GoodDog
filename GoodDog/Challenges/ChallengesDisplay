@@ -1,0 +1,146 @@
+import React from "react";
+import * as userService from "../../services/challengeService";
+import ChallengeCard from "./ChallengeCard";
+import ChallengeCreation from "./ChallengeCreation";
+import Pagination from "react-js-pagination";
+import { Modal } from "reactstrap";
+import * as prompts from "../NotificationMessage";
+
+export default class ChallengeDisplay extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      challenges: [],
+      activePage: 1,
+      pageSize: 6,
+      cardInfo: [],
+      open: false,
+      total: 10
+    };
+  }
+  componentDidMount() {
+    this.pageDisplay(0, this.state.pageSize);
+  }
+
+  pageDisplay = (pageIndex, pageSize) => {
+    let pageData = { pageIndex: pageIndex, pageSize: pageSize };
+    userService
+      .getByPage(pageData)
+      .then(this.onDisplaySuccess)
+      .catch(this.onDisplayError);
+  };
+
+  toggle = () => {
+    this.setState({
+      open: !this.state.open
+    });
+  };
+
+  handlePageChange = pageNumber => {
+    this.pageDisplay(pageNumber - 1, this.state.pageSize);
+
+    window.scrollTo(0, 0);
+  };
+
+  onDisplaySuccess = data => {
+    this.setState({
+      challenges: data.item.pagedItems,
+      pageSize: data.item.pageSize,
+      total: data.item.totalCount,
+      activePage: data.item.pageIndex
+    });
+  };
+
+  onDisplayError = () => {
+    console.log("error");
+  };
+
+  pagination = () => {
+    return (
+      <Pagination
+        itemClass="page-item"
+        linkClass="page-link"
+        hideDisabled
+        activePage={this.state.activePage + 1}
+        itemsCountPerPage={10}
+        totalItemsCount={this.state.total}
+        pageRangeDisplayed={5}
+        onChange={this.handlePageChange}
+      />
+    );
+  };
+
+  challengeList = challenge => {
+    return (
+      <ChallengeCard
+        {...this.props}
+        key={challenge.id}
+        challenge={challenge}
+        modalRequester={this.onModalRequested}
+        challengeAccept={this.onChallengeAccepted}
+      />
+    );
+  };
+
+  onModalRequested = challenge => {
+    this.setState({
+      open: !this.state.open,
+      cardInfo: challenge
+    });
+  };
+
+  onChallengeAccepted = challenge => {
+    let challengeData = {
+      userId: this.props.currentUser.id,
+      challengeId: challenge.id
+    };
+    userService
+      .acceptChallenge(challengeData)
+      .then(this.sweetSuccess)
+      .catch(this.sweetFailure);
+  };
+
+  sweetSuccess() {
+    prompts.success({
+      message: "Accepted Challenge!"
+    });
+  }
+
+  sweetFailure() {
+    prompts.error({
+      message: "Cannot accept duplicate Challenges!"
+    });
+  }
+
+  remove = challenge => {
+    console.log("Successfully Deleted!");
+    let data = challenge.id;
+    userService.remove(data, this.pageDisplay, this.onDisplayError);
+  };
+
+  render() {
+    return (
+      <div>
+        <div className="row gallary m-5">
+          {this.state.challenges.map(this.challengeList)}
+        </div>
+
+        <Modal
+          {...this.props}
+          className="Modal"
+          toggle={this.toggle}
+          isOpen={this.state.open}
+          container={this.true}
+        >
+          <ChallengeCreation
+            challengeInfo={this.state.cardInfo}
+            remove={this.remove}
+            pageDisplay={this.pageDisplay}
+          />
+        </Modal>
+
+        <div className="d-flex justify-content-center">{this.pagination()}</div>
+      </div>
+    );
+  }
+}
