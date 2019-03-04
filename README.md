@@ -3,7 +3,7 @@
 
 Included are some basic code samples from a recent project.
 
-I was either the original/primary author or solo author of the code. 
+I was either the original or primary of the code. 
 
 As this code was pulled from a larger project, there may be some dependencies missing that affect funcationality
 
